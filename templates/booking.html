@@ -3,6 +3,13 @@
     <!-- <div class="container"> -->
         <h2>{{competition['name']}}</h2>
         Places available: {{competition['numberOfPlaces']}}
+
+        {% if p_fail %}
+        <div class="alert alert-dismissible alert-danger">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <strong>Oh snap!</strong> You have try to get too much place.
+        </div>
+        {% endif %}
         <div class="col-5">
             <form action="/purchasePlaces" method="post">
                 <input type="hidden" name="club" value="{{club['name']}}">
