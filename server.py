@@ -1,6 +1,6 @@
 import json
 from flask import Flask,render_template,request,redirect,flash,url_for, session
-
+from datetime import datetime
 
 def loadClubs():
     with open('clubs.json') as c:
@@ -20,6 +20,8 @@ app.secret_key = 'something_special'
 competitions = loadCompetitions()
 clubs = loadClubs()
 
+now = datetime.now()
+
 @app.route('/')
 def index():
     return render_template('index.html',pageName="Home")
@@ -30,7 +32,12 @@ def resume():
         club = [club for club in clubs if club['email'] == session.get('user_p11')][0]
     except Exception as e:
         return render_template('index.html',pageName="Home", login=False)
-
+    for comp in competitions:
+        date_comp = datetime(int(comp['date'][:4]), int(comp['date'][5:7]), int(comp['date'][8:10]))
+        if now > date_comp:
+            comp['passed'] = True
+        else:
+            comp['passed'] = False
     return render_template('welcome.html',club=club,competitions=competitions, pageName="Resume")
 
 
@@ -41,8 +48,14 @@ def showSummary():
         session['user_p11'] = request.form['email']
     except Exception as e:
         return render_template('index.html',pageName="Home", login=False)
-
+    for comp in competitions:
+        date_comp = datetime(int(comp['date'][:4]), int(comp['date'][5:7]), int(comp['date'][8:10]))
+        if now > date_comp:
+            comp['passed'] = True
+        else:
+            comp['passed'] = False
     return render_template('welcome.html',club=club,competitions=competitions, pageName="Resume")
+
 
 
 @app.route('/book/<competition>/<club>')

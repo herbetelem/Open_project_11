@@ -25,9 +25,15 @@
                 <div class="card-body">
                     <p class="card-title">Date: {{comp['date']}}</p>
                     <p class="card-text">Number of Places: {{comp['numberOfPlaces']}}</p>
-                    {%if comp['numberOfPlaces']|int >0%}
-                        <a class="btn btn-primary" href="{{ url_for('book',competition=comp['name'],club=club['name']) }}">Book Places</a>
-                    {%endif%}
+                    {% if comp['passed'] %}
+                        <a class="btn btn-warning disabled" href="#">Date passed</a>
+                    {% else %}
+                        {%if comp['numberOfPlaces']|int >0%}
+                            <a class="btn btn-primary" href="{{ url_for('book',competition=comp['name'],club=club['name']) }}">Book Places</a>
+                        {% else %}
+                            <a class="btn btn-secondary disabled">No more places</a>
+                        {%endif%}
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}
