@@ -1,0 +1,23 @@
+{% include "header.html" %}
+<!-- <body> -->
+    <!-- <div class="container"> -->
+        <h1>Display Club's Points</h1>
+        <table class="table table-hover">
+            <thead class="table-success">
+                <tr align="center">
+                    <th scope="col">Club Name</th>
+                    <th scope="col">Number of Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for club in clubs%}
+                <tr align="center">
+                    <th scope="row">{{club['name']}}</th>
+                    <td>{{club['points']}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

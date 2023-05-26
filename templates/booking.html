@@ -1,0 +1,16 @@
+{% include "header.html" %}
+<!-- <body> -->
+    <!-- <div class="container"> -->
+        <h2>{{competition['name']}}</h2>
+        Places available: {{competition['numberOfPlaces']}}
+        <div class="col-5">
+            <form action="/purchasePlaces" method="post">
+                <input type="hidden" name="club" value="{{club['name']}}">
+                <input type="hidden" name="competition" value="{{competition['name']}}">
+                <input class="form-control me-sm-2" type="number" placeholder="How many places" name="places">
+                <button class="btn btn-secondary my-2 my-sm-0" type="submit">Book</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

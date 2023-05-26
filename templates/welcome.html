@@ -1,0 +1,38 @@
+{% include "header.html" %}
+<!-- <body> -->
+    <!-- <div class="container"> -->
+        <div class="div">
+            <h1 style="float: left">Welcome, {{club['email']}} </h1>
+            <h2 style="float: right;">Points available: {{club['points']}}</h2>
+        </div>
+        <div style="clear: both"/>
+
+        {% with messages = get_flashed_messages()%}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                <li>{{message}}</li>
+                {% endfor %}
+            </ul>
+        {% endif%}
+        
+        <br><br>
+        <div class="competition">
+            <h3>Competitions:</h3>
+            {% for comp in competitions%}
+            <div class="card border-primary mb-3" style="max-width: 20rem; float: left; margin-right: 2em;">
+                <div class="card-header">{{comp['name']}}</div>
+                <div class="card-body">
+                    <p class="card-title">Date: {{comp['date']}}</p>
+                    <p class="card-text">Number of Places: {{comp['numberOfPlaces']}}</p>
+                    {%if comp['numberOfPlaces']|int >0%}
+                        <a class="btn btn-primary" href="{{ url_for('book',competition=comp['name'],club=club['name']) }}">Book Places</a>
+                    {%endif%}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {%endwith%}
+    </div>
+</body>
+</html>
