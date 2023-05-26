@@ -15,11 +15,11 @@
         <div class="collapse navbar-collapse" id="navbarColor01">
             <ul class="navbar-nav me-auto">
             <li class="nav-item">
-                {% if club: %}
+                {% if session.get('user_p11'): %}
                     {% if pageName == "Home": %}
-                        <a class="nav-link active" href="showSummary">Resume</a>
+                        <a class="nav-link active" href="/resume">Resume</a>
                     {% else %}
-                        <a class="nav-link" href="showSummary">Resume</a>
+                        <a class="nav-link" href="/resume">Resume</a>
                     {% endif %}
                 {% else %}
                     {% if pageName == "Home": %}
@@ -37,7 +37,7 @@
                 {% endif %}
             </li>
         </div>
-        {% if club %}
+        {% if session.get('user_p11') %}
         <div class="d-flex">
             <a type="button" class="btn btn-secondary" href="{{url_for('logout')}}">Logout</a>
         </div>
