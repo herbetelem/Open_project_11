@@ -1,5 +1,5 @@
 import json
-from flask import Flask,render_template,request,redirect,flash,url_for
+from flask import Flask,render_template,request,redirect,flash,url_for, session
 
 
 def loadClubs():
@@ -24,9 +24,24 @@ clubs = loadClubs()
 def index():
     return render_template('index.html',pageName="Home")
 
+@app.route('/resume')
+def resume():
+    try:
+        club = [club for club in clubs if club['email'] == session.get('user_p11')][0]
+    except Exception as e:
+        return render_template('index.html',pageName="Home", login=False)
+
+    return render_template('welcome.html',club=club,competitions=competitions, pageName="Resume")
+
+
 @app.route('/showSummary',methods=['POST'])
 def showSummary():
-    club = [club for club in clubs if club['email'] == request.form['email']][0]
+    try:
+        club = [club for club in clubs if club['email'] == request.form['email']][0]
+        session['user_p11'] = request.form['email']
+    except Exception as e:
+        return render_template('index.html',pageName="Home", login=False)
+
     return render_template('welcome.html',club=club,competitions=competitions, pageName="Resume")
 
 
@@ -50,12 +65,11 @@ def purchasePlaces():
     flash('Great-booking complete!')
     return render_template('welcome.html', club=club, competitions=competitions)
 
-
-# TODO: Add route for points display
 @app.route('/displayPoints')
 def displayPoints():
     return render_template('display.html', clubs=clubs, pageName="Display")
 
 @app.route('/logout')
 def logout():
+    session.pop('user_p11', None)
     return redirect(url_for('index'))

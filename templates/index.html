@@ -3,18 +3,28 @@
     <!-- <div class="container"> -->
         <h1>Welcome to the GUDLFT Registration Portal!</h1>
 
-        <form action="showSummary" method="post">
-            <fieldset>
-                <legend>Please enter your secretary email to continue:</legend>
-                <div class="form-group row">
-                    <label for="email" class="col-sm-2 col-form-label">Email</label>
-                    <div class="col-sm-10">
-                        <input type="email" class="form-control" id="" name="email" value="john@simplylift.co">
+        {% if login == False %}
+        <div class="alert alert-dismissible alert-danger">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <strong>Oh snap!</strong> You're mail is not is the database.
+        </div>
+        {% endif %}
+        {% if session.get('user_p11') %}
+
+        {% else %}
+            <form action="showSummary" method="post">
+                <fieldset>
+                    <legend>Please enter your secretary email to continue:</legend>
+                    <div class="form-group row">
+                        <label for="email" class="col-sm-2 col-form-label">Email</label>
+                        <div class="col-sm-10">
+                            <input type="email" class="form-control" id="" name="email" value="john@simplylift.co">
+                        </div>
                     </div>
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </fieldset>
-        </form>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </fieldset>
+            </form>
+        {% endif %}
     </div>
 </body>
 </html>
