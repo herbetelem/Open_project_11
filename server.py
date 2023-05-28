@@ -1,5 +1,5 @@
 import json
-from flask import Flask,render_template,request,redirect,flash,url_for, session
+from flask import Flask,render_template,request,redirect,flash,url_for, session, redirect
 from datetime import datetime
 
 def loadClubs():
