@@ -1,5 +1,5 @@
 import json
-from flask import Flask,render_template,request,redirect,flash,url_for, session
+from flask import Flask,render_template,request,redirect,flash,url_for, session, redirect
 from datetime import datetime
 
 def loadClubs():
@@ -23,7 +23,7 @@ app.secret_key = 'something_special'
 
 competitions = loadCompetitions()
 clubs = loadClubs()
-places = loadPlaces()
+places_all = loadPlaces()
 
 now = datetime.now()
 
@@ -37,13 +37,25 @@ def resume():
         club = [club for club in clubs if club['email'] == session.get('user_p11')][0]
     except Exception as e:
         return render_template('index.html',pageName="Home", login=False)
+    
+    places = [place for place in places_all if place['club'] == club["name"]]
     for comp in competitions:
         date_comp = datetime(int(comp['date'][:4]), int(comp['date'][5:7]), int(comp['date'][8:10]))
         if now > date_comp:
             comp['passed'] = True
         else:
             comp['passed'] = False
-    
+        try:
+            place_comp = [place["numberOfPlaces"] for place in places if comp["name"] == place["tournament"]][0]
+            comp['place_taken'] = int(place_comp)
+        except Exception as e:
+            comp['place_taken'] = 0
+        if comp['place_taken'] == 12:
+            comp['color'] = "danger"
+        elif comp['place_taken'] > 8:
+            comp['color'] = "warning"
+        else:
+            comp['color'] = "success"
     return render_template('welcome.html',club=club,competitions=competitions, pageName="Resume")
 
 

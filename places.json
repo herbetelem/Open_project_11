@@ -4,6 +4,18 @@
             "tournament": "Spring Festival",
             "club": "Simply Lift",
             "numberOfPlaces": "10"
+        },{
+            "tournament": "Spring Festival",
+            "club": "Iron Temple",
+            "numberOfPlaces": "2"
+        },{
+            "tournament": "MDI",
+            "club": "Simply Lift",
+            "numberOfPlaces": "8"
+        },{
+            "tournament": "Tibo Inshape Tournament",
+            "club": "Simply Lift",
+            "numberOfPlaces": "12"
         }
     ]
 }
