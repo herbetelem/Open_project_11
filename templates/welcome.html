@@ -22,7 +22,7 @@
             {% for comp in competitions%}
             <div class="card border-primary mb-3" style="max-width: 20rem; float: left; margin-right: 2em;">
                 <div class="card-header">{{comp['name']}}
-                    <span class="badge rounded-pill bg-primary d-flex">10/12</span>
+                    <span class="badge bg-{{comp['color']}} rounded-pill">{{comp['place_taken']}}/12</span>
                 </div>
                 <div class="card-body">
                     <p class="card-title">Date: {{comp['date']}}</p>
