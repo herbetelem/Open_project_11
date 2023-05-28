@@ -13,12 +13,17 @@ def loadCompetitions():
         listOfCompetitions = json.load(comps)['competitions']
         return listOfCompetitions
 
+def loadPlaces():
+    with open('places.json') as c:
+        listOfPlaces = json.load(c)['places']
+        return listOfPlaces
 
 app = Flask(__name__)
 app.secret_key = 'something_special'
 
 competitions = loadCompetitions()
 clubs = loadClubs()
+places = loadPlaces()
 
 now = datetime.now()
 
@@ -38,6 +43,7 @@ def resume():
             comp['passed'] = True
         else:
             comp['passed'] = False
+    
     return render_template('welcome.html',club=club,competitions=competitions, pageName="Resume")
 
 
