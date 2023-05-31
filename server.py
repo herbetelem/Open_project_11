@@ -38,6 +38,21 @@ def resume():
     except Exception as e:
         return render_template('index.html',pageName="Home", login=False)
     
+    set_comp(club)
+    return render_template('welcome.html',club=club,competitions=competitions, pageName="Resume")
+
+@app.route('/showSummary',methods=['POST'])
+def showSummary():
+    try:
+        club = [club for club in clubs if club['email'] == request.form['email']][0]
+        session['user_p11'] = request.form['email']
+    except Exception as e:
+        return render_template('index.html',pageName="Home", login=False)
+    set_comp(club)
+    return render_template('welcome.html',club=club,competitions=competitions, pageName="Resume")
+
+
+def set_comp(club):
     places = [place for place in places_all if place['club'] == club["name"]]
     for comp in competitions:
         date_comp = datetime(int(comp['date'][:4]), int(comp['date'][5:7]), int(comp['date'][8:10]))
@@ -56,24 +71,6 @@ def resume():
             comp['color'] = "warning"
         else:
             comp['color'] = "success"
-    return render_template('welcome.html',club=club,competitions=competitions, pageName="Resume")
-
-
-@app.route('/showSummary',methods=['POST'])
-def showSummary():
-    try:
-        club = [club for club in clubs if club['email'] == request.form['email']][0]
-        session['user_p11'] = request.form['email']
-    except Exception as e:
-        return render_template('index.html',pageName="Home", login=False)
-    for comp in competitions:
-        date_comp = datetime(int(comp['date'][:4]), int(comp['date'][5:7]), int(comp['date'][8:10]))
-        if now > date_comp:
-            comp['passed'] = True
-        else:
-            comp['passed'] = False
-    return render_template('welcome.html',club=club,competitions=competitions, pageName="Resume")
-
 
 
 @app.route('/book/<competition>/<club>')
