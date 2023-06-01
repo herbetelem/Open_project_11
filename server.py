@@ -77,7 +77,7 @@ def set_comp(club):
 def book(competition,club):
     foundClub = [c for c in clubs if c['name'] == club][0]
     foundCompetition = [c for c in competitions if c['name'] == competition][0]
-    if foundClub and foundCompetition:
+    if foundClub and foundCompetition and foundCompetition['passed'] == False:
         return render_template('booking.html',club=foundClub,competition=foundCompetition, pageName="book")
     else:
         flash("Something went wrong-please try again")
@@ -93,11 +93,21 @@ def purchasePlaces():
     places = [place for place in places_all if place['club'] == club["name"]]
     place_comp = [place["numberOfPlaces"] for place in places if competition["name"] == place["tournament"]][0]
 
+
     places_total_required = int(placesRequired) + int(place_comp)
-    if places_total_required > 12:
+    if places_total_required > 12 or placesRequired > int(competition['numberOfPlaces']) or competition['passed'] or placesRequired > club['point']:
         return render_template('booking.html',club=request.form['club'],competition=request.form['competition'],pageName="book",p_fail=True)
+
+    club["points"] = int(club["points"]) - int(placesRequired)
     competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
+
+    for place in places:
+        if place['club'] == club['name'] and place['tournament'] == competition['name']:
+            place['numberOfPlaces'] = places_total_required
+
     flash('Great-booking complete!')
+
+    set_comp(club)
     return render_template('welcome.html', club=club, competitions=competitions)
 
 @app.route('/displayPoints')
