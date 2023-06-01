@@ -93,7 +93,7 @@ def purchasePlaces():
     places = [place for place in places_all if place['club'] == club["name"]]
     place_comp = [place["numberOfPlaces"] for place in places if competition["name"] == place["tournament"]][0]
 
-    places_total_required = placesRequired + place_comp
+    places_total_required = int(placesRequired) + int(place_comp)
     if places_total_required > 12:
         return render_template('booking.html',club=request.form['club'],competition=request.form['competition'],pageName="book",p_fail=True)
     competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
