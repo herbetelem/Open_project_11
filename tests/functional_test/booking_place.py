@@ -1,15 +1,12 @@
 import unittest
 from flask import Flask, session
-from server import app, loadClubs, loadCompetitions, loadPlaces
+from server import app
 
 class FlaskTest(unittest.TestCase):
 
     def setUp(self):
         self.app = app
         self.app.config['TESTING'] = True
-        self.data_comps = loadCompetitions()
-        self.data_clubs = loadClubs()
-        self.data_places = loadPlaces()
 
     def tearDown(self):
         pass
