@@ -7,7 +7,6 @@ def loadClubs():
         listOfClubs = json.load(c)['clubs']
         return listOfClubs
 
-
 def loadCompetitions():
     with open('competitions.json') as comps:
         listOfCompetitions = json.load(comps)['competitions']
@@ -18,14 +17,28 @@ def loadPlaces():
         listOfPlaces = json.load(c)['places']
         return listOfPlaces
 
+def list_potential_user():
+    email_list = []
+    for club in clubs:
+        email_list.append(club['email'])
+    return email_list
+
 app = Flask(__name__)
 app.secret_key = 'something_special'
 
 competitions = loadCompetitions()
 clubs = loadClubs()
 places_all = loadPlaces()
+email_list = list_potential_user()
 
 now = datetime.now()
+
+def check_login():
+    try:
+        if session.get('user_p11'):
+            return True
+    except Exception as e:
+        return redirect(url_for('index'))
 
 @app.route('/')
 def index():
@@ -34,7 +47,10 @@ def index():
 @app.route('/resume')
 def resume():
     try:
-        club = [club for club in clubs if club['email'] == session.get('user_p11')][0]
+        if session.get('user_p11') in email_list:
+            club = [club for club in clubs if club['email'] == session.get('user_p11')][0]
+        else:
+            return render_template('index.html',pageName="Home", login=False)
     except Exception as e:
         return render_template('index.html',pageName="Home", login=False)
     
@@ -50,7 +66,6 @@ def showSummary():
         return render_template('index.html',pageName="Home", login=False)
     set_comp(club)
     return render_template('welcome.html',club=club,competitions=competitions, pageName="Resume")
-
 
 def set_comp(club):
     places = [place for place in places_all if place['club'] == club["name"]]
@@ -72,11 +87,14 @@ def set_comp(club):
         else:
             comp['color'] = "success"
 
-
 @app.route('/book/<competition>/<club>')
 def book(competition,club):
-    foundClub = [c for c in clubs if c['name'] == club][0]
-    foundCompetition = [c for c in competitions if c['name'] == competition][0]
+    check_login()
+    try:
+        foundClub = [c for c in clubs if c['name'] == club][0]
+        foundCompetition = [c for c in competitions if c['name'] == competition][0]
+    except Exception as e:
+        return redirect(url_for('resume'))
     set_comp(foundCompetition)
     if foundClub and foundCompetition and foundCompetition['passed'] == False:
         return render_template('booking.html',club=foundClub,competition=foundCompetition, pageName="book")
@@ -84,17 +102,21 @@ def book(competition,club):
         flash("Something went wrong-please try again")
         return render_template('welcome.html', club=club, competitions=competitions, pageName="book")
 
-
 @app.route('/purchasePlaces',methods=['POST'])
 def purchasePlaces():
-    competition = [c for c in competitions if c['name'] == request.form['competition']][0]
-    club = [c for c in clubs if c['name'] == request.form['club']][0]
+    check_login()
+    try:
+        competition = [c for c in competitions if c['name'] == request.form['competition']][0]
+        club = [c for c in clubs if c['name'] == request.form['club']][0]
+    except Exception as e:
+        return redirect(url_for('resume'))
     placesRequired = int(request.form['places'])
     set_comp(competition)
-
-    places = [place for place in places_all if place['club'] == club["name"]]
-    place_comp = [place["numberOfPlaces"] for place in places if competition["name"] == place["tournament"]][0]
-
+    try:
+        places = [place for place in places_all if place['club'] == club["name"]]
+        place_comp = [place["numberOfPlaces"] for place in places if competition["name"] == place["tournament"]][0]
+    except Exception as e:
+        place_comp = 0
 
     places_total_required = int(placesRequired) + int(place_comp)
     if places_total_required > 12 or placesRequired > int(competition['numberOfPlaces']) or competition['passed'] or placesRequired > int(club['points']):
